@@ -1,6 +1,8 @@
 import loadable from '@/utils/loadable'
 
 const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index'))
+const Cms = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Cms'))
+// const CmsPageConfig = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Cms/PageConfig'))
 
 // 通用
 const ButtonView = loadable(() => import(/* webpackChunkName: 'button' */ '@/views/PublicView/Button'))
@@ -32,6 +34,8 @@ const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Abo
 
 const routes = [
   { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
+  { path: '/cms', exact: true, name: 'cms', component: Cms, auth: [1] },
+  // { path: '/cms/page-config', exact: true, name: 'cms-detail', component: CmsPageConfig, auth: [1] },
   { path: '/public/button', exact: false, name: '按钮', component: ButtonView, auth: [1] },
   { path: '/public/icon', exact: false, name: '图标', component: IconView, auth: [1] },
   { path: '/nav/dropdown', exact: false, name: '下拉菜单', component: DropdownView },

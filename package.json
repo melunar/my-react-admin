@@ -8,21 +8,27 @@
         "axios": "^0.19.0",
         "braft-editor": "^2.3.8",
         "echarts": "^4.4.0",
+        "hmacsha1": "^1.0.0",
+        "js-cookie": "^2.2.1",
+        "lodash.get": "^4.4.2",
         "nprogress": "^0.2.0",
+        "protobufjs": "^6.10.2",
         "react": "^16.10.1",
+        "react-beautiful-dnd": "^13.0.0",
         "react-dom": "^16.10.1",
         "react-loadable": "^5.5.0",
         "react-redux": "^7.1.1",
         "react-router-dom": "^5.1.1",
+        "react-scripts": "^3.2.0",
         "redux": "^4.0.4",
-        "screenfull": "^5.0.0",
-        "react-scripts": "^3.2.0"
+        "screenfull": "^5.0.0"
     },
     "scripts": {
         "start": "react-app-rewired start",
         "build": "react-app-rewired build",
         "test": "react-app-rewired test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "proto:js": "pbjs -t json-module -w es6 -o src/proto/biz-proto/index.js ../../turing/Protocol/NewBao/NewBao_*.proto"
     },
     "eslintConfig": {
         "extends": "react-app"
