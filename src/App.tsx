@@ -16,10 +16,10 @@ const Login = loadable(() => import(/* webpackChunkName: 'login' */ './views/Log
 const App = () => (
   <Router>
     <Switch>
-      <Route path='/' exact render={() => <Redirect to='/index' />} />
-      <Route path='/500' component={View500} />
-      <Route path='/login' component={Login} />
-      <Route path='/404' component={View404} />
+      <Route path="/" exact render={() => <Redirect to="/index" />} />
+      <Route path="/500" component={View500} />
+      <Route path="/login" component={Login} />
+      <Route path="/404" component={View404} />
       <Route component={DefaultLayout} />
     </Switch>
   </Router>
