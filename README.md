@@ -73,9 +73,18 @@
 ### 使用方法
 
 ```npm
-git clone ???
+git clone https://github.com/melunar/my-react-admin.git 
 
-cd ???
+cd my-react-admin
+
+// 子模块 初始化
+git submodule init
+
+// 子模块 更新
+git submodule update --remote
+
+// 子模块 提交
+// 可进入对应文件 创建分支正常提交即可
 
 // 安装依赖
 yarn
