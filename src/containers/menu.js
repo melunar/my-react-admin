@@ -12,6 +12,13 @@ const menu = [
     auth: [1]
   },
   {
+    title: '系统',
+    key: '/system',
+    icon: 'setting',
+    auth: [1],
+    subs: [{ title: '用户管理', key: '/system/user', icon: 'user' }]
+  },
+  {
     title: '通用',
     key: '/public',
     icon: 'appstore',

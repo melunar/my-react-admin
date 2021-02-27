@@ -4,6 +4,11 @@ import { withRouter } from 'react-router-dom'
 // import axios from '@/api'
 // import { API } from '@/api/config'
 import '@/style/view-style/login.scss'
+// import { User } from '../../admin-types/schema/user'
+
+// const user: User = {
+// //   userName: ''
+// }
 
 class Login extends Component {
   state = {
