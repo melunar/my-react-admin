@@ -71,6 +71,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "deploy": "scp -r ./build/* root@121.37.158.0:/data/application/my-admin",
     "test": "react-app-rewired test",
     "proto:js": "pbjs -t json-module -w es6 -o src/proto/biz-proto/index.js ../../turing/Protocol/NewBao/NewBao_*.proto"
   },

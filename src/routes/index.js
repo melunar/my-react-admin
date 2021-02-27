@@ -32,6 +32,9 @@ const UploadView = loadable(() => import(/* webpackChunkName: 'upload' */ '@/vie
 const Three = loadable(() => import(/* webpackChunkName: 'three' */ '@/views/TestView'))
 const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/About'))
 
+// 用户管理
+const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/System/User'))
+
 const routes = [
   { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
   { path: '/cms', exact: true, name: 'cms', component: Cms, auth: [1] },
@@ -52,7 +55,8 @@ const routes = [
   { path: '/others/editor', exact: false, name: '富文本', component: EditorView, auth: [1] },
   { path: '/others/upload', exact: false, name: '上传', component: UploadView, auth: [1] },
   { path: '/one/two/three', exact: false, name: '三级', component: Three },
-  { path: '/about', exact: false, name: '关于', component: About, auth: [1] }
+  { path: '/about', exact: false, name: '关于', component: About, auth: [1] },
+  { path: '/system/user', exact: false, name: '用户管理', component: User, auth: [1] },
 ]
 
 export default routes
