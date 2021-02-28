@@ -4,16 +4,14 @@ import { withRouter } from 'react-router-dom'
 // import axios from '@/api'
 // import { API } from '@/api/config'
 import '@/style/view-style/login.scss'
-// import { User } from '../../admin-types/schema/user'
 
-// const user: User = {
-// //   userName: ''
-// }
 
-class Login extends Component {
+class Login extends Component<any, any> {
   state = {
     loading: false
   }
+
+  timer: any
 
   enterLoading = () => {
     this.setState({
@@ -21,9 +19,9 @@ class Login extends Component {
     })
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e: any) => {
     e.preventDefault()
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
         // let { username, password } = values
         // axios
@@ -75,30 +73,30 @@ class Login extends Component {
   render() {
     const { getFieldDecorator } = this.props.form
     return (
-      <Layout className='login animated fadeIn'>
-        <div className='model'>
-          <div className='login-form'>
+      <Layout className="login animated fadeIn">
+        <div className="model">
+          <div className="login-form">
             <h3>后台管理系统</h3>
             <Divider />
             <Form onSubmit={this.handleSubmit}>
               <Form.Item>
                 {getFieldDecorator('username', {
                   rules: [{ required: true, message: '请输入用户名!' }]
-                })(<Input prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder='用户名' />)}
+                })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />)}
               </Form.Item>
               <Form.Item>
                 {getFieldDecorator('password', {
                   rules: [{ required: true, message: '请输入密码' }]
                 })(
                   <Input
-                    prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    type='password'
-                    placeholder='密码'
+                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    type="password"
+                    placeholder="密码"
                   />
                 )}
               </Form.Item>
               <Form.Item>
-                <Button type='primary' htmlType='submit' className='login-form-button' loading={this.state.loading}>
+                <Button type="primary" htmlType="submit" className="login-form-button" loading={this.state.loading}>
                   登录
                 </Button>
               </Form.Item>
@@ -110,4 +108,4 @@ class Login extends Component {
   }
 }
 
-export default withRouter(Form.create()(Login))
+export default withRouter<any, any>(Form.create()(Login))

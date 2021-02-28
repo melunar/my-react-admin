@@ -33,7 +33,7 @@ const Three = loadable(() => import(/* webpackChunkName: 'three' */ '@/views/Tes
 const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/About'))
 
 // 用户管理
-const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/System/User'))
+const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/System/User/index'))
 
 const routes = [
   { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },

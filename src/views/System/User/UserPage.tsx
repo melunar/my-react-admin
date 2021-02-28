@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Divider, Row, Col, Tag, Table, Button } from 'antd'
+import { Layout, Divider, Row, Col, Tag, Table } from 'antd'
 import { AdminUrl } from '@/api/config'
 import axios from '@/api'
 import '@/style/view-style/table.scss'
@@ -20,9 +20,10 @@ const columns = [
     title: '性别',
     dataIndex: 'sex',
     key: 'sex',
-    render: sex => {
-      const colorMapper = {0: 'gray', 1: 'blue', 2: 'pink'}
-      return <Tag color={colorMapper[sex]}>{{0: '未知', 1: '男生', 2: '女生'}[sex]}</Tag>
+    render: (sex: number) => {
+      const colorMapper: { [key: number]: string } = {0: 'gray', 1: 'blue', 2: 'pink'}
+      const sexMapper: { [key: number]: string } = { 0: '未知', 1: '男生', 2: '女生' }
+      return <Tag color={colorMapper[sex]}>{sexMapper[sex]}</Tag>
     }
   },
   {
@@ -34,13 +35,13 @@ const columns = [
     title: '注册时间',
     key: 'registerTime',
     dataIndex: 'registerTime',
-    render: dateTime => (Date(dateTime))
+    render: (dateTime: number) => (new Date(dateTime).toLocaleDateString())
   }
 ]
 
 
-class UserPage extends Component {
-  constructor(props) {
+class UserPage extends Component<any, any> {
+  constructor(props: any) {
     super(props)
     this.state = {
       tableData: []
@@ -58,14 +59,14 @@ class UserPage extends Component {
 
   render() {
     return (
-      <Layout className='animated fadeIn'>
+      <Layout className="animated fadeIn">
         <div>
           <CustomBreadcrumb arr={['系统', '用户管理']}></CustomBreadcrumb>
         </div>
         <Row>
           <Col>
-            <div className='base-style'>
-              <h3 id='basic'>用户管理</h3>
+            <div className="base-style">
+              <h3 id="basic">用户管理</h3>
               <Divider />
               <Table rowKey="id" columns={columns} dataSource={this.state.tableData} />
             </div>
