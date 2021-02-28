@@ -18,12 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "./src",                             /* Base directory to resolve non-absolute module names. */
-    "paths": {
-      "@/*": ["*"]
-    }, 
+    "jsx": "react-jsx"
   },
+  "extends": "./tsconfig.base.json",
   "awesomeTypescriptLoaderOptions": {
     "transpileOnly": true
   },
