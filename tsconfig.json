@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.path.json",
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -19,10 +20,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src",                             /* Base directory to resolve non-absolute module names. */
-    "paths": {
-      "@/*": ["*"]
-    }, 
+    "baseUrl": "./src"
   },
   "awesomeTypescriptLoaderOptions": {
     "transpileOnly": true
