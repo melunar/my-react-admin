@@ -4,5 +4,8 @@
     "pbjs",
     "proto",
     "screenfull"
+  ],
+  "cSpell.words": [
+    "unmount"
   ]
 }

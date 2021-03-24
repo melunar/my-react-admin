@@ -1,0 +1,1 @@
+export const AdminUrl: string = 'http://lalapkp.cn:3030/admin'

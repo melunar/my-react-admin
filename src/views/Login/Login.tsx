@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Layout, Input, Icon, Form, Button, Divider, message, notification } from 'antd'
 import { withRouter } from 'react-router-dom'
-// import axios from '@/api'
-// import { API } from '@/api/config'
+import axios from '@/api'
+import { AdminUrl } from '@/api/config'
+import { USER_PROTOCOL, USER_PROTOCOL_SCHEMA } from '@/admin-types/modules/User.proto'
 import '@/style/view-style/login.scss'
 
 
@@ -21,48 +22,32 @@ class Login extends Component<any, any> {
 
   handleSubmit = (e: any) => {
     e.preventDefault()
-    this.props.form.validateFields((err: any, values: any) => {
+    this.props.form.validateFields(async (err: any, values: any) => {
       if (!err) {
-        // let { username, password } = values
-        // axios
-        //     .post(`${API}/login`, { username, password })
-        //     .then(res => {
-        //         if (res.data.code === 0) {
-        //             localStorage.setItem('user', JSON.stringify(res.data.data.user))
-        //             localStorage.setItem('token', res.data.data.token)
-        //             this.props.history.push('/')
-        //             message.success('登录成功!')
-        //         } else {
-        //             // 这里处理一些错误信息
-        //         }
-        //     })
-        //     .catch(err => {})
-
-        // 这里可以做权限校验 模拟接口返回用户权限标识
-        switch (values.username) {
-          case 'admin':
-            values.auth = 0
-            break
-          default:
-            values.auth = 1
-        }
-
-        localStorage.setItem('user', JSON.stringify(values))
-        this.enterLoading()
-        this.timer = setTimeout(() => {
+        const { password, username: userName } = values
+        const res = await axios.post(`${AdminUrl}${USER_PROTOCOL.USER_LOGIN.url}`, { userName, password } as USER_PROTOCOL_SCHEMA.USER_LOGIN.REQUEST) as USER_PROTOCOL_SCHEMA.USER_LOGIN.RESPONSE
+        if (res && res.code === 200) {
           message.success('登录成功!')
-          this.props.history.push('/')
-        }, 2000)
+          values.auth = res.data.user.adminRole
+          localStorage.setItem('user', JSON.stringify(values))
+          localStorage.setItem('token', res.data.token)
+          this.enterLoading()
+          this.timer = setTimeout(() => {
+            this.props.history.push('/')
+          }, 1500)
+        } else {
+          message.warn(res.message || '登陆异常，请稍后再试')
+        }
       }
     })
   }
 
   componentDidMount() {
-    notification.open({
-      message: '欢迎使用后台管理平台',
-      duration: null,
-      description: '账号 admin(管理员) 其他(游客) 密码随意'
-    })
+    // notification.open({
+    //   message: '欢迎使用后台管理平台',
+    //   duration: null,
+    //   description: '账号 admin(管理员) 其他(游客) 密码随意'
+    // })
   }
 
   componentWillUnmount() {
@@ -76,7 +61,7 @@ class Login extends Component<any, any> {
       <Layout className="login animated fadeIn">
         <div className="model">
           <div className="login-form">
-            <h3>后台管理系统</h3>
+            <h3>DST 管理系统</h3>
             <Divider />
             <Form onSubmit={this.handleSubmit}>
               <Form.Item>

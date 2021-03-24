@@ -27,6 +27,16 @@ const columns = [
     }
   },
   {
+    title: '角色',
+    dataIndex: 'adminRole',
+    key: 'adminRole',
+    render: (adminRole: number) => {
+      const adminRoleMapper: { [key: number]: string } = {0: '管理员', 1: '普通'}
+      const colorMapper: { [key: number]: string } = {0: 'red', 1: 'gray'}
+      return <Tag color={colorMapper[adminRole]}>{adminRoleMapper[adminRole]}</Tag>
+    }
+  },
+  {
     title: '手机号',
     key: 'phone',
     dataIndex: 'phone'
