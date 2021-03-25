@@ -342,6 +342,6 @@ class FromView extends Component {
     }
 }
 
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(FromView)
+const WrappedNormalLoginForm = Form.create({ name: ['normal_login'] })(FromView)
 
 export default WrappedNormalLoginForm

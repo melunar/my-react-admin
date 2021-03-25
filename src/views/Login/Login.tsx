@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { Layout, Input, Icon, Form, Button, Divider, message, notification } from 'antd'
+import { Layout, Input, Form, Button, Divider, message, notification, FormInstance } from 'antd'
 import { withRouter } from 'react-router-dom'
 import axios from '@/api'
 import { AdminUrl } from '@/api/config'
 import { USER_PROTOCOL, USER_PROTOCOL_SCHEMA } from '@/admin-types/modules/User.proto'
 import '@/style/view-style/login.scss'
+import { LockOutlined, UserOutlined } from '@ant-design/icons/lib/icons'
 
 
 class Login extends Component<any, any> {
@@ -12,34 +13,37 @@ class Login extends Component<any, any> {
     loading: false
   }
 
+  formRef = React.createRef<FormInstance>()
+
   timer: any
 
-  enterLoading = () => {
+  setLoading = (status = false) => {
     this.setState({
-      loading: true
+      loading: status
     })
   }
 
-  handleSubmit = (e: any) => {
-    e.preventDefault()
-    this.props.form.validateFields(async (err: any, values: any) => {
-      if (!err) {
-        const { password, username: userName } = values
-        const res = await axios.post(`${AdminUrl}${USER_PROTOCOL.USER_LOGIN.url}`, { userName, password } as USER_PROTOCOL_SCHEMA.USER_LOGIN.REQUEST) as USER_PROTOCOL_SCHEMA.USER_LOGIN.RESPONSE
-        if (res && res.code === 200) {
-          message.success('登录成功!')
-          values.auth = res.data.user.adminRole
-          localStorage.setItem('user', JSON.stringify(values))
-          localStorage.setItem('token', res.data.token)
-          this.enterLoading()
-          this.timer = setTimeout(() => {
-            this.props.history.push('/')
-          }, 900)
-        } else {
-          message.warn(res.message || '登陆异常，请稍后再试')
-        }
-      }
-    })
+  handleSubmit = async (values: any) => {
+    // e.preventDefault()
+    // this.props.form.validateFields(async (err: any, values: any) => {
+      // if (!err) {
+    const { password, username: userName } = values
+    this.setLoading(true)
+    const res = await axios.post(`${AdminUrl}${USER_PROTOCOL.USER_LOGIN.url}`, { userName, password } as USER_PROTOCOL_SCHEMA.USER_LOGIN.REQUEST) as USER_PROTOCOL_SCHEMA.USER_LOGIN.RESPONSE
+    this.setLoading(false)
+    if (res && res.code === 200) {
+      message.success('登录成功!')
+      values.auth = res.data.user.adminRole
+      localStorage.setItem('user', JSON.stringify(values))
+      localStorage.setItem('token', res.data.token)
+      this.timer = setTimeout(() => {
+        this.props.history.push('/')
+      }, 300)
+    } else {
+      message.warn(res.message || '登陆异常，请稍后再试')
+    }
+      // }
+    // })
   }
 
   componentDidMount() {
@@ -56,29 +60,22 @@ class Login extends Component<any, any> {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
     return (
       <Layout className="login animated fadeIn">
         <div className="model">
           <div className="login-form">
             <h3>DST 管理系统</h3>
             <Divider />
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Item>
-                {getFieldDecorator('username', {
-                  rules: [{ required: true, message: '请输入用户名!' }]
-                })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />)}
+            <Form ref={this.formRef} onFinish={this.handleSubmit}>
+              <Form.Item name="username" rules={[{ required: true, message: '请输入用户名!' }]}>
+                <Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />
               </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('password', {
-                  rules: [{ required: true, message: '请输入密码' }]
-                })(
-                  <Input
-                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              <Form.Item name="password" rules={[{ required: true, message: '请输入密码!' }]}>
+                <Input
+                    prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                     type="password"
                     placeholder="密码"
                   />
-                )}
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit" className="login-form-button" loading={this.state.loading}>
@@ -93,4 +90,4 @@ class Login extends Component<any, any> {
   }
 }
 
-export default withRouter<any, any>(Form.create()(Login))
+export default withRouter<any, any>(Login)

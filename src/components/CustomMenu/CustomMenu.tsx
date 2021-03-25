@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import { Menu } from 'antd'
+import { BarsOutlined } from '@ant-design/icons'
 import { Link, withRouter } from 'react-router-dom'
 
 class CustomMenu extends Component<any, any> {
@@ -70,7 +71,8 @@ class CustomMenu extends Component<any, any> {
   renderMenuItem = ({ key, icon, title }: MenuItem) => (
     <Menu.Item key={key}>
       <Link to={key}>
-        {icon && <Icon type={icon} />}
+        {/* {icon && <Icon type={icon} />} */}
+        {icon && <BarsOutlined />}
         <span>{title}</span>
       </Link>
     </Menu.Item>
@@ -83,7 +85,8 @@ class CustomMenu extends Component<any, any> {
         key={key}
         title={
           <span>
-            {icon && <Icon type={icon} />}
+            {/* {icon && <Icon type={icon} />} */}
+            {icon && <BarsOutlined />}
             <span>{title}</span>
           </span>
         }>
