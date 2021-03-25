@@ -1,52 +1,102 @@
 import React, { Component } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
+import dayjs from 'dayjs'
 import { Layout, Divider, Row, Col, Tag, Table } from 'antd'
 import { AdminUrl } from '@/api/config'
 import axios from '@/api'
+import { JA } from '@/admin-types/modules/JenkinsApplication.d'
 import '@/style/view-style/table.scss'
+import common from './common'
+
+const testData: JA.JenkinsApplication[] = [{
+  projectName: '1111',
+  applyTime: new Date().getTime() - 60000,
+  status: 1,
+  repositoryURL: 'file:///Users/admin/Downloads/%23%23%20axure/index.html#id=%81%9A&g=1',
+  devDeployPath: '0000',
+  masterDeployPath: '2222',
+  orgName: '啊啊啊33',
+  description: '一个小项目',
+}, {
+  projectName: '2222',
+  applyTime: new Date().getTime() - 50000,
+  status: 2,
+  repositoryURL: 'file:///Users/admin/Downloads/%23%23%20axure/index.html#id=%81%9A&g=1',
+  devDeployPath: '0000',
+  masterDeployPath: '2222',
+  description: '一个小项目',
+}, {
+  projectName: '333',
+  orgName: '啊啊啊',
+  applyTime: new Date().getTime() - 40000,
+  status: 3,
+  applyWriteBackMessage: '你不行啊',
+  repositoryURL: 'file:///Users/admin/Downloads/%23%23%20axure/index.html#id=%81%9A&g=1',
+  devDeployPath: '0000',
+  masterDeployPath: '2222',
+  description: '一个小项目',
+}, {
+  projectName: '4444',
+  orgName: '啊啊啊',
+  applyTime: new Date().getTime() - 30000,
+  status: 5,
+  repositoryURL: 'file:///Users/admin/Downloads/%23%23%20axure/index.html#id=%81%9A&g=1',
+  devDeployPath: '0000',
+  masterDeployPath: '2222',
+  description: '一个小项目',
+}, {
+  projectName: '65555',
+  orgName: '啊啊啊',
+  applyTime: new Date().getTime() - 20000,
+  status: 5,
+  createSuccessTime: new Date().getTime() - 10000,
+  repositoryURL: 'file:///Users/admin/Downloads/%23%23%20axure/index.html#id=%81%9A&g=1',
+  devDeployPath: '0000',
+  masterDeployPath: '2222',
+  description: '一个小项目',
+}]
 
 const columns = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
+    title: '项目名称',
+    dataIndex: 'projectName',
+    key: 'projectName',
   },
   {
-    title: '用户名',
-    dataIndex: 'userName',
-    key: 'userName'
+    title: '所属组织',
+    dataIndex: 'orgName',
+    key: 'orgName'
   },
   {
-    title: '性别',
-    dataIndex: 'sex',
-    key: 'sex',
-    render: (sex: number) => {
-      const colorMapper: { [key: number]: string } = {0: 'gray', 1: 'blue', 2: 'pink'}
-      const sexMapper: { [key: number]: string } = { 0: '未知', 1: '男生', 2: '女生' }
-      return <Tag color={colorMapper[sex]}>{sexMapper[sex]}</Tag>
+    title: '申请时间',
+    dataIndex: 'applyTime',
+    key: 'applyTime',
+    render: (dateTime: number) => {
+      return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss')
     }
   },
   {
-    title: '角色',
-    dataIndex: 'adminRole',
-    key: 'adminRole',
-    render: (adminRole: number) => {
-      const adminRoleMapper: { [key: number]: string } = {0: '管理员', 1: '普通'}
-      const colorMapper: { [key: number]: string } = {0: 'red', 1: 'gray'}
-      return <Tag color={colorMapper[adminRole]}>{adminRoleMapper[adminRole]}</Tag>
+    title: '状态',
+    dataIndex: 'status',
+    key: 'status',
+    render: (status: JA.JAStatus) => {
+      const colorMapper: { [key: number]: string } = { [JA.JAStatus.APPLYING]: 'gray', [JA.JAStatus.REAPPLYING]: 'blue', [JA.JAStatus.RECEIVE]: 'pink', [JA.JAStatus.RETURN]: 'red', [JA.JAStatus.SUCCESS]: 'green'}
+      return <Tag color={colorMapper[status]}>{common.statusNameMapper[status]}</Tag>
     }
   },
   {
-    title: '手机号',
-    key: 'phone',
-    dataIndex: 'phone'
+    title: '申请恢复',
+    key: 'applyWriteBackMessage',
+    dataIndex: 'applyWriteBackMessage',
+    render: (applyWriteBackMessage: number, _data: JA.JenkinsApplication) => {
+      return _data.status === JA.JAStatus.RETURN ? applyWriteBackMessage : '--'
+    }
   },
   {
-    title: '注册时间',
-    key: 'registerTime',
-    dataIndex: 'registerTime',
-    render: (dateTime: number) => (new Date(dateTime).toLocaleDateString())
-  }
+    title: '描述',
+    key: 'description',
+    dataIndex: 'description'
+  },
 ]
 
 
@@ -62,7 +112,7 @@ class MineApplication extends Component<any, any> {
     console.log('...componentDidMount')
     axios.get(`${AdminUrl}/user/list`, {}).then(res => {
       this.setState({
-        tableData: res.data.list
+        tableData: testData
       })
     })
   }
@@ -71,14 +121,14 @@ class MineApplication extends Component<any, any> {
     return (
       <Layout className="animated fadeIn">
         <div>
-          <CustomBreadcrumb arr={['系统', '用户管理']}></CustomBreadcrumb>
+          <CustomBreadcrumb arr={['系统', '应用管理']}></CustomBreadcrumb>
         </div>
         <Row>
           <Col>
             <div className="base-style">
               <h3 id="basic">我的应用</h3>
               <Divider />
-              <Table rowKey="id" columns={columns} dataSource={this.state.tableData} />
+              <Table rowKey="projectName" columns={columns} dataSource={this.state.tableData} />
             </div>
           </Col>
         </Row>
