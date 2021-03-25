@@ -1,4 +1,14 @@
-const menu = [
+//  https://ant.design/components/icon-cn/
+
+// interface MenuItem {
+//   key: string;
+//   title: string;
+//   icon?: string;
+//   auth?: number[];
+//   subs?: MenuItem[];
+// }
+
+const menu: MenuItem[] = [
   {
     key: '/index',
     title: '首页',
@@ -14,6 +24,13 @@ const menu = [
   {
     title: '系统',
     key: '/system',
+    icon: 'setting',
+    auth: [1],
+    subs: [{ title: '用户管理', key: '/system/user', icon: 'user' }]
+  },
+  {
+    title: '应用管理',
+    key: '/application',
     icon: 'setting',
     auth: [1],
     subs: [{ title: '用户管理', key: '/system/user', icon: 'user' }]

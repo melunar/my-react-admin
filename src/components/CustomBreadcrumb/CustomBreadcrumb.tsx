@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Breadcrumb } from 'antd'
 import { Link } from 'react-router-dom'
 
-const CustomBreadcrumb = props => (
+const CustomBreadcrumb = (props: { arr: any[] }) => (
     <Breadcrumb style={{ marginBottom: 16 }}>
         <Breadcrumb.Item>
             <Link to='/index'>首页</Link>
@@ -27,7 +27,7 @@ CustomBreadcrumb.propTypes = {
     arr: PropTypes.array.isRequired
 }
 
-function shouldRender(nextProps, prevProps) {
+function shouldRender(nextProps: { arr: any[] }, prevProps: { arr: any[] }) {
     if (nextProps.arr.join() === prevProps.arr.join()) {
         return true
     }

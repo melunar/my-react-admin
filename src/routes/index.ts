@@ -1,4 +1,5 @@
 import loadable from '@/utils/loadable'
+import { ComponentType } from 'react'
 
 const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index'))
 const Cms = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Cms'))
@@ -35,7 +36,7 @@ const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Abo
 // 用户管理
 const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/System/User/index'))
 
-const routes = [
+const routes: RouteSchema[] = [
   { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
   { path: '/cms', exact: true, name: 'cms', component: Cms, auth: [1] },
   // { path: '/cms/page-config', exact: true, name: 'cms-detail', component: CmsPageConfig, auth: [1] },

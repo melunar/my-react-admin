@@ -4,7 +4,7 @@ import { Menu, Dropdown, Icon, Layout, Avatar, Badge } from 'antd'
 
 const { Header } = Layout
 
-const AppHeader = props => {
+const AppHeader = (props: { menuClick: any; avatar: any; menuToggle: any; loginOut: any }) => {
   let { menuClick, avatar, menuToggle, loginOut } = props
   const menu = (
     <Menu>

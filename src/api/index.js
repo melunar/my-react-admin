@@ -5,7 +5,7 @@ import { message } from 'antd'
 const token = localStorage.getItem('token')
 
 const instance = axios.create({
-  timeout: 5000
+  timeout: 10000
 })
 
 // 设置post请求头

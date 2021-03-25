@@ -5,7 +5,7 @@ import CustomMenu from '@/components/CustomMenu'
 
 const { Sider } = Layout
 
-const AppAside = props => {
+const AppAside = (props: { menuToggle: any; menu: any }) => {
   let { menuToggle, menu } = props
   return (
     <Sider className='aside' collapsed={menuToggle}>
