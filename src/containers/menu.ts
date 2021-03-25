@@ -26,14 +26,14 @@ const menu: MenuItem[] = [
     key: '/system',
     icon: 'setting',
     auth: [1],
-    subs: [{ title: '用户管理', key: '/system/user', icon: 'user' }]
-  },
-  {
-    title: '应用管理',
-    key: '/application',
-    icon: 'setting',
-    auth: [1],
-    subs: [{ title: '用户管理', key: '/system/user', icon: 'user' }]
+    subs: [
+      { title: '用户管理', key: '/system/user', icon: 'user' },
+      { title: 'Jenkins应用管理', key: '/system/application', icon: '', auth: [1], subs: [
+        { title: '我的应用', key: '/system/application/mine', icon: '', auth: [1] },
+        { title: '应用审核', key: '/system/application/all', icon: '', },
+        { title: '权限分配记录', key: '/system/application/distribution', icon: '', },
+      ] },
+    ]
   },
   {
     title: '通用',

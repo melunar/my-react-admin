@@ -42,13 +42,26 @@ class DefaultLayout extends Component<any, any> {
     this.props.history.push('/login')
     message.success('登出成功!')
   }
-  getMenu = (menu: any) => {
+  getMenu = (menu: MenuItem[]) => {
     let newMenu
     const auth = JSON.parse(localStorage.getItem('user') as string).auth
     if (!auth) {
       return menu
     } else {
-      newMenu = menu.filter((res: any) => res.auth && res.auth.indexOf(auth) !== -1)
+      // newMenu = menu.filter((res: any) => res.auth && res.auth.indexOf(auth) !== -1)
+      // newMenu 需要递归获取权限
+      const filterMenu = (menuList: MenuItem[], userType: number) => {
+        return menuList.filter(item => {
+          return item.auth?.includes(userType)
+        }).map(item => {
+            item = Object.assign({}, item)
+            if (item.subs) {
+              item.subs = filterMenu(item.subs, userType)
+            }
+            return item
+        })
+      }
+      newMenu = filterMenu(menu, auth)
       return newMenu
     }
   }

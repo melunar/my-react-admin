@@ -34,7 +34,7 @@ class Login extends Component<any, any> {
           this.enterLoading()
           this.timer = setTimeout(() => {
             this.props.history.push('/')
-          }, 1500)
+          }, 900)
         } else {
           message.warn(res.message || '登陆异常，请稍后再试')
         }
