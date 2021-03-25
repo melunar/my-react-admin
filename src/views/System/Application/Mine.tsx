@@ -1,12 +1,14 @@
 import React, { Component, ReactElement } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import dayjs from 'dayjs'
-import { Modal, Layout, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance } from 'antd'
+import { Modal, Layout, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance, AutoComplete } from 'antd'
 import { AdminUrl } from '@/api/config'
 import axios from '@/api'
 import { JA } from '@/admin-types/modules/JenkinsApplication.d'
 import '@/style/view-style/table.scss'
 import common from './common'
+import { url } from 'node:inspector'
+import { PlusOutlined } from '@ant-design/icons'
 
 const testData: JA.JenkinsApplication[] = [{
   projectName: '咸鱼H5',
@@ -62,10 +64,11 @@ const testData: JA.JenkinsApplication[] = [{
 interface State {
   tableData: JA.JenkinsApplication[];
   modalDetailShow: boolean;
+  modalAddEditShow: boolean;
+  modalBuildShow: boolean;
+  modalDistributeShow: boolean;
   columns: any;
   modalDetailData: JA.JenkinsApplication;
-  modalAddEditShow: boolean;
-  modalAddEditData: JA.JenkinsApplication;
 }
 
 class MineApplication extends Component<any, State> {
@@ -136,35 +139,51 @@ class MineApplication extends Component<any, State> {
                 this.setState({ modalDetailData: item, modalDetailShow: true })
               }}
             >详情</Button>
+
             const editBtn = <Button
               type="ghost"
               size="small"
               onClick={() => {
                 console.log('编辑')
-                this.setState({ modalAddEditShow: true, modalAddEditData: JSON.parse(JSON.stringify(item)) as JA.JenkinsApplication })
+                this.editAddFormRef.current?.setFieldsValue(item)
+                setTimeout(() => {
+                  this.setState({ modalAddEditShow: true })
+                })
               }}
             >编辑</Button>
+
             const buildBtn = <Button
               type="default"
               size="small"
               onClick={() => {
                 console.log('构建')
+                this.buildFormRef.current?.resetFields()
+                setTimeout(() => {
+                  this.setState({ modalBuildShow: true })
+                })
               }}
             >构建</Button>
+
             const distributeBtn = <Button
               type="primary"
               size="small"
               onClick={() => {
                 console.log('分发')
+                this.distributeFormRef.current?.resetFields()
+                setTimeout(() => {
+                  this.setState({ modalDistributeShow: true })
+                })
               }}
             >分享权限</Button>
+
             const viewBuildBtn = <Button
               type="primary"
               size="small"
               onClick={() => {
-                console.log('查看构建')
+                window.open('http://121.37.158.0:8080/')
               }}
             >查看构建</Button>
+
             // style={{ whiteSpace: 'nowrap' }}
             if (status === JA.JAStatus.APPLYING || status === JA.JAStatus.REAPPLYING) {
               buttons = (<span>{detailBtn}<Divider type='vertical'/>{editBtn}</span>)
@@ -184,16 +203,8 @@ class MineApplication extends Component<any, State> {
       ],
       modalAddEditShow: false,
       modalDetailShow: false,
-      modalAddEditData: {
-        projectName: '',
-        applyTime: 0,
-        status: 1,
-        repositoryURL: '',
-        devDeployPath: '',
-        masterDeployPath: '',
-        description: '',
-        orgName: ''
-      },
+      modalDistributeShow: false,
+      modalBuildShow: false,
       modalDetailData: {
         projectName: '',
         applyTime: 0,
@@ -208,7 +219,11 @@ class MineApplication extends Component<any, State> {
     }
   }
 
-  editAddFormRef = React.createRef<FormInstance>()
+  /** 各个表单 */
+  editAddFormRef = React.createRef<FormInstance<JA.JenkinsApplication>>()
+  searchFormRef = React.createRef<FormInstance>()
+  buildFormRef = React.createRef<FormInstance<{ branch: string }>>()
+  distributeFormRef = React.createRef<FormInstance<{ userName: string }>>()
 
   componentDidMount () {
     console.log('...componentDidMount')
@@ -218,11 +233,49 @@ class MineApplication extends Component<any, State> {
       })
     })
   }
+  /** 项目创建-编辑 提交 */
   editAddFinish = (values: any) => {
-    debugger
+    console.log('val', values)
+    this.editAddFormRef.current?.resetFields()
+    this.setState({ modalAddEditShow: false })
+  }
+  /** 项目分发权限 提交 */
+  distributeFinish = (values: any) => {
+    console.log('val', values)
+    Modal.confirm({
+      content: `确定把构建权限分配给${values.userName}吗，不可撤回`,
+      onOk: () => {
+        console.log('todo 下发')
+        this.setState({ modalDistributeShow: false })
+        this.distributeFormRef.current?.resetFields()
+      },
+      onCancel: () => {
+        console.log('Cancel')
+      },
+    });
+  }
+  /** 项目构建 提交 */
+  buildFinish = (values: any) => {
+    console.log('val', values)
+    this.buildFormRef.current?.resetFields()
+    this.setState({ modalBuildShow: false })
+  }
+  /** 搜索 提交 */
+  searchFinish = (values: any) => {
+    console.log('val', values)
   }
   render() {
     const { columns, modalDetailData } = this.state
+    const addEditFormItemLayout = {
+      labelCol: {
+          xs: { span: 6 },
+          sm: { span: 6 }
+      },
+      wrapperCol: {
+          xs: { span: 6 },
+          sm: { span: 10 }
+      }
+    }
     return (
       <Layout className="animated fadeIn">
         <div>
@@ -232,6 +285,38 @@ class MineApplication extends Component<any, State> {
           <Col>
             <div className="base-style">
               <h3 id="basic">我的应用</h3>
+              <Divider />
+              <div style={{ margin: '10px 0' }}>
+                <Form layout="inline" ref={this.searchFormRef} onFinish={this.searchFinish}>
+                  <Form.Item name="projectName" label="项目名称" >
+                    <Input placeholder="请输入项目名称" allowClear />
+                  </Form.Item>
+                  <Form.Item name="status" label="状态">
+                    <Select placeholder="请选择状态" style={{ width: '200px' }} allowClear>
+                      {common.statusList.map((item, ii) => (
+                        <Select.Option key={ii + ''} value={item.value}>{item.name}</Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      搜索
+                    </Button>
+                  </Form.Item>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <Form.Item>
+                    <Button
+                      icon={<PlusOutlined />}
+                      danger
+                      type="primary" color="green" onClick={() => {
+                      this.editAddFormRef.current?.resetFields()
+                      this.setState({ modalAddEditShow: true })
+                    }}>
+                      创建项目
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
               <Divider />
               <Table rowKey="projectName" columns={columns} dataSource={this.state.tableData} />
             </div>
@@ -246,28 +331,35 @@ class MineApplication extends Component<any, State> {
           onCancel={() => { this.setState({ modalAddEditShow: false }) }}
           width={900}
         >
-          <Form ref={this.editAddFormRef} name="control-ref" onFinish={this.editAddFinish}>
+          <Form {...addEditFormItemLayout} ref={this.editAddFormRef} name="control-ref" onFinish={this.editAddFinish}>
             <Form.Item name="projectName" label="项目名称" rules={[{ required: true }]} >
-            <Input placeholder="请输入项目名称" />
+              <Input placeholder="请输入项目名称" />
             </Form.Item>
-            <Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
-              <Select
-                placeholder="选择项目所属组织"
-                allowClear
-              >
-                <Select.Option value="male">male</Select.Option>
-                <Select.Option value="female">female</Select.Option>
-                <Select.Option value="other">other</Select.Option>
+            <Form.Item name="orgName" label="项目组织">
+              <AutoComplete
+                options={common.orgListBeat}
+                placeholder="请输入项目组织"
+              />
+            </Form.Item>
+            <Form.Item name="priority" label="紧急程度">
+              <Select placeholder="请选择紧急程度">
+                {common.priorityList.map((item, ii) => (
+                  <Select.Option key={ii + ''} value={item.value}>{item.name}</Select.Option>
+                ))}
               </Select>
             </Form.Item>
-            <Form.Item>
+            <Form.Item name="repositoryURL" label="项目地址" rules={[{ required: true }]} >
+              <Input placeholder="请输入项目地址" />
+            </Form.Item>
+            <Form.Item name="devDeployPath" label="dev部署路径" rules={[{ required: true }]} >
+              <Input placeholder="请输入dev部署路径" />
+            </Form.Item>
+            <Form.Item name="masterDeployPath" label="idc部署路径" rules={[{ required: true }]} >
+              <Input placeholder="请输入idc部署路径" />
+            </Form.Item>
+            <Form.Item wrapperCol={{ xs: { span: 24, offset: 0, }, sm: { span: 16, offset: 8 } }}>
               <Button type="primary" htmlType="submit">
                 提交
-              </Button>
-              <Button htmlType="button" onClick={() => {
-                this.editAddFormRef.current!.resetFields()
-              }}>
-                重置
               </Button>
             </Form.Item>
           </Form>
@@ -298,6 +390,50 @@ class MineApplication extends Component<any, State> {
             {modalDetailData.status === JA.JAStatus.RETURN && <Descriptions.Item label="申请回复信息">{modalDetailData.applyWriteBackMessage}</Descriptions.Item>}
             <Descriptions.Item label="描述">{modalDetailData.description}</Descriptions.Item>
           </Descriptions>
+        </Modal>
+        {/* 权限下发 */}
+        <Modal
+          title="权限下发"
+          centered
+          visible={this.state.modalDistributeShow}
+          onOk={() => { this.setState({ modalDistributeShow: false }) }}
+          onCancel={() => { this.setState({ modalDistributeShow: false }) }}
+          width={600}
+        >
+          <Form {...addEditFormItemLayout} ref={this.distributeFormRef} onFinish={this.distributeFinish}>
+            <Form.Item name="userName" label="用户名" rules={[{ required: true }]} >
+              <Input placeholder="请输入用户名" />
+            </Form.Item>
+            <Form.Item wrapperCol={{ xs: { span: 24, offset: 0, }, sm: { span: 16, offset: 8 } }}>
+              <Button type="primary" htmlType="submit">
+                提交
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+        {/* 构建 */}
+        <Modal
+          title="构建"
+          centered
+          visible={this.state.modalBuildShow}
+          onOk={() => { this.setState({ modalBuildShow: false }) }}
+          onCancel={() => { this.setState({ modalBuildShow: false }) }}
+          width={600}
+        >
+          <Form {...addEditFormItemLayout} ref={this.buildFormRef} onFinish={this.buildFinish}>
+            <Form.Item name="branch" label="选择环境">
+              <Select placeholder="请选择环境">
+                {common.branchList.map((item, ii) => (
+                  <Select.Option key={ii + ''} value={item.value}>{item.name}</Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item wrapperCol={{ xs: { span: 24, offset: 0, }, sm: { span: 16, offset: 8 } }}>
+              <Button type="primary" htmlType="submit">
+                提交
+              </Button>
+            </Form.Item>
+          </Form>
         </Modal>
       </Layout>
     )
