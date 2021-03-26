@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { Modal, Layout, message, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance } from 'antd'
 import { AdminUrl } from '@/api/config'
 import axios from '@/api'
-import { JA } from '@/admin-types/modules/JenkinsApplication.d'
+import { JA } from '@/admin-types/modules/JenkinsApplication'
 import '@/style/view-style/table.scss'
 import common from './common'
 

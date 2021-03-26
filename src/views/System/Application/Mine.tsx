@@ -1,14 +1,14 @@
 import React, { Component, ReactElement } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import dayjs from 'dayjs'
-import { Modal, Layout, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance, AutoComplete } from 'antd'
-import { AdminUrl } from '@/api/config'
+import { Modal, Layout, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance, AutoComplete, message } from 'antd'
+import { AdminJenkinsApplicationUrl } from '@/api/config'
 import axios from '@/api'
-import { JA } from '@/admin-types/modules/JenkinsApplication.d'
+import { PlusOutlined } from '@ant-design/icons'
+import { JA_PROTOCOL_SCHEMA, JA_PROTOCOL } from '@/admin-types/modules/JenkinsApplication.proto'
+import { JA } from '@/admin-types/modules/JenkinsApplication'
 import '@/style/view-style/table.scss'
 import common from './common'
-import { PlusOutlined } from '@ant-design/icons'
-
 interface State {
   tableData: JA.JenkinsApplication[];
   modalDetailShow: boolean;
@@ -92,10 +92,10 @@ class MineApplication extends Component<any, State> {
               type="ghost"
               size="small"
               onClick={() => {
-                console.log('编辑')
-                this.editAddFormRef.current?.setFieldsValue(item)
+                console.log('编辑', item)
+                this.setState({ modalAddEditShow: true }) // 先让form实例生成 防止 setFieldsValue 失败
                 setTimeout(() => {
-                  this.setState({ modalAddEditShow: true })
+                  this.editAddFormRef.current?.setFieldsValue(item)
                 })
               }}
             >编辑</Button>
@@ -105,9 +105,9 @@ class MineApplication extends Component<any, State> {
               size="small"
               onClick={() => {
                 console.log('构建')
-                this.buildFormRef.current?.resetFields()
+                this.setState({ modalBuildShow: true })
                 setTimeout(() => {
-                  this.setState({ modalBuildShow: true })
+                  this.buildFormRef.current?.resetFields()
                 })
               }}
             >构建</Button>
@@ -117,9 +117,9 @@ class MineApplication extends Component<any, State> {
               size="small"
               onClick={() => {
                 console.log('分发')
-                this.distributeFormRef.current?.resetFields()
+                this.setState({ modalDistributeShow: true })
                 setTimeout(() => {
-                  this.setState({ modalDistributeShow: true })
+                  this.distributeFormRef.current?.resetFields()
                 })
               }}
             >分享权限</Button>
@@ -174,18 +174,34 @@ class MineApplication extends Component<any, State> {
   distributeFormRef = React.createRef<FormInstance<{ userName: string }>>()
 
   componentDidMount () {
-    console.log('...componentDidMount')
-    axios.get(`${AdminUrl}/user/list`, {}).then(res => {
-      this.setState({
-        tableData: common.testData
-      })
-    })
+    this.getDataList({})
+  }
+  getDataList = async ({ projectName = '', status = 0 }: { projectName?: string; status?: JA.JAStatus }) => {
+    const { JA_SEARCH } = JA_PROTOCOL
+    const param: JA_PROTOCOL_SCHEMA.JA_SEARCH.REQUEST = { projectName: projectName || '' }
+    if (status) param.status = status
+    const res = await axios.get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, { params: param }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
+    if (res && res.code === 200) {
+      this.setState({ tableData: res.data.list })
+    }
   }
   /** 项目创建-编辑 提交 */
-  editAddFinish = (values: any) => {
+  editAddFinish = async (values: JA.JenkinsApplication) => {
     console.log('val', values)
-    this.editAddFormRef.current?.resetFields()
-    this.setState({ modalAddEditShow: false })
+    if (values._id) {
+      // 编辑
+      return message.warn('编辑暂未实现')
+    }
+    const { JA_ADD } = JA_PROTOCOL
+    const param: JA_PROTOCOL_SCHEMA.JA_ADD.REQUEST = values
+    const res = await axios.post(`${AdminJenkinsApplicationUrl}${JA_ADD.url}`, param) as JA_PROTOCOL_SCHEMA.JA_ADD.RESPONSE
+    if (res && res.code === 200) {
+      this.editAddFormRef.current?.resetFields()
+      this.setState({ modalAddEditShow: false })
+      message.success('创建成功')
+    } else {
+      message.warn((res && res.message) || '创建失败..')
+    }
   }
   /** 项目分发权限 提交 */
   distributeFinish = (values: any) => {
@@ -209,8 +225,9 @@ class MineApplication extends Component<any, State> {
     this.setState({ modalBuildShow: false })
   }
   /** 搜索 提交 */
-  searchFinish = (values: any) => {
+  searchFinish = (values: { projectName?: string, status?: JA.JAStatus }) => {
     console.log('val', values)
+    this.getDataList(values)
   }
   render() {
     const { columns, modalDetailData } = this.state
@@ -266,7 +283,7 @@ class MineApplication extends Component<any, State> {
                 </Form>
               </div>
               <Divider />
-              <Table rowKey="projectName" columns={columns} dataSource={this.state.tableData} />
+              <Table rowKey="_id" columns={columns} dataSource={this.state.tableData} />
             </div>
           </Col>
         </Row>
@@ -280,6 +297,10 @@ class MineApplication extends Component<any, State> {
           width={900}
         >
           <Form {...addEditFormItemLayout} ref={this.editAddFormRef} name="control-ref" onFinish={this.editAddFinish}>
+            {/* 隐藏的id 用于判断是否是编辑状态 */}
+            <Form.Item name="_id" label="项目id" hidden>
+              <Input placeholder="项目id" />
+            </Form.Item>
             <Form.Item name="projectName" label="项目名称" rules={[{ required: true }]} >
               <Input placeholder="请输入项目名称" />
             </Form.Item>
@@ -304,6 +325,9 @@ class MineApplication extends Component<any, State> {
             </Form.Item>
             <Form.Item name="masterDeployPath" label="idc部署路径" rules={[{ required: true }]} >
               <Input placeholder="请输入idc部署路径" />
+            </Form.Item>
+            <Form.Item name="description" label="项目描述" rules={[{ required: true }]} >
+              <Input.TextArea placeholder="请输入项目描述" />
             </Form.Item>
             <Form.Item wrapperCol={{ xs: { span: 24, offset: 0, }, sm: { span: 16, offset: 8 } }}>
               <Button type="primary" htmlType="submit">

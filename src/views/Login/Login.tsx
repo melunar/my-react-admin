@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Layout, Input, Form, Button, Divider, message, notification, FormInstance } from 'antd'
 import { withRouter } from 'react-router-dom'
 import axios from '@/api'
-import { AdminUrl } from '@/api/config'
+import { AdminUserUrl } from '@/api/config'
 import { USER_PROTOCOL, USER_PROTOCOL_SCHEMA } from '@/admin-types/modules/User.proto'
 import '@/style/view-style/login.scss'
 import { LockOutlined, UserOutlined } from '@ant-design/icons/lib/icons'
@@ -13,7 +13,7 @@ class Login extends Component<any, any> {
     loading: false
   }
 
-  formRef = React.createRef<FormInstance>()
+  formRef = React.createRef<FormInstance<{ username: string; password: string }>>()
 
   timer: any
 
@@ -24,12 +24,9 @@ class Login extends Component<any, any> {
   }
 
   handleSubmit = async (values: any) => {
-    // e.preventDefault()
-    // this.props.form.validateFields(async (err: any, values: any) => {
-      // if (!err) {
     const { password, username: userName } = values
     this.setLoading(true)
-    const res = await axios.post(`${AdminUrl}${USER_PROTOCOL.USER_LOGIN.url}`, { userName, password } as USER_PROTOCOL_SCHEMA.USER_LOGIN.REQUEST) as USER_PROTOCOL_SCHEMA.USER_LOGIN.RESPONSE
+    const res = await axios.post(`${AdminUserUrl}${USER_PROTOCOL.USER_LOGIN.url}`, { userName, password } as USER_PROTOCOL_SCHEMA.USER_LOGIN.REQUEST) as USER_PROTOCOL_SCHEMA.USER_LOGIN.RESPONSE
     this.setLoading(false)
     if (res && res.code === 200) {
       message.success('登录成功!')
@@ -42,16 +39,13 @@ class Login extends Component<any, any> {
     } else {
       message.warn(res.message || '登陆异常，请稍后再试')
     }
-      // }
-    // })
   }
 
   componentDidMount() {
-    // notification.open({
-    //   message: '欢迎使用后台管理平台',
-    //   duration: null,
-    //   description: '账号 admin(管理员) 其他(游客) 密码随意'
-    // })
+    this.formRef.current?.setFieldsValue({
+      username: 'admin',
+      password: '123456'
+    })
   }
 
   componentWillUnmount() {
