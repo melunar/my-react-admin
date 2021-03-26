@@ -133,8 +133,16 @@ class AllApplication extends Component<any, State> {
               onClick={() => {
                 Modal.confirm({
                   content: `确认项目Jenkins创建成功，标记为可用状态吗？不可回退`,
-                  onOk: () => {
-                    console.log('todo')
+                  onOk: async () => {
+                    const { JA_SUCCESS } = JA_PROTOCOL
+                    const param: JA_PROTOCOL_SCHEMA.JA_SUCCESS.REQUEST = { _id: (item._id as string) }
+                    const res = await axios.post(`${AdminJenkinsApplicationUrl}${JA_SUCCESS.url}`, param) as JA_PROTOCOL_SCHEMA.JA_SUCCESS.RESPONSE
+                    if (res && res.code === 200) {
+                      message.success('操作成功')
+                      this.getDataList(this.searchFormRef.current?.getFieldsValue())
+                    } else {
+                      message.warn((res && res.message) || '操作失败')
+                    }
                   },
                   onCancel: () => {
                     console.log('Cancel')
