@@ -2,9 +2,10 @@ import React, { Component, ReactElement } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import dayjs from 'dayjs'
 import { Modal, Layout, message, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance } from 'antd'
-import { AdminUrl } from '@/api/config'
+import { AdminJenkinsApplicationUrl } from '@/api/config'
 import axios from '@/api'
 import { JA } from '@/admin-types/modules/JenkinsApplication'
+import { JA_PROTOCOL_SCHEMA, JA_PROTOCOL } from '@/admin-types/modules/JenkinsApplication.proto'
 import '@/style/view-style/table.scss'
 import common from './common'
 
@@ -91,8 +92,16 @@ class AllApplication extends Component<any, State> {
               onClick={() => {
                 Modal.confirm({
                   content: `确认项目配置填写完整，不可回退，接受后申请者不可再编辑`,
-                  onOk: () => {
-                    console.log('todo')
+                  onOk: async () => {
+                    const { JA_RECEIVE } = JA_PROTOCOL
+                    const param: JA_PROTOCOL_SCHEMA.JA_RECEIVE.REQUEST = { _id: (item._id as string) }
+                    const res = await axios.post(`${AdminJenkinsApplicationUrl}${JA_RECEIVE.url}`, param) as JA_PROTOCOL_SCHEMA.JA_RECEIVE.RESPONSE
+                    if (res && res.code === 200) {
+                      message.success('操作成功')
+                      this.getDataList(this.searchFormRef.current?.getFieldsValue())
+                    } else {
+                      message.warn((res && res.message) || '操作失败')
+                    }
                   },
                   onCancel: () => {
                     console.log('Cancel')
@@ -207,12 +216,16 @@ class AllApplication extends Component<any, State> {
   distributeFormRef = React.createRef<FormInstance<{ userName: string }>>()
 
   componentDidMount () {
-    console.log('...componentDidMount')
-    axios.get(`${AdminUrl}/user/list`, {}).then(res => {
-      this.setState({
-        tableData: common.testData
-      })
-    })
+    this.getDataList({})
+  }
+  getDataList = async ({ projectName = '', status = 0 }: { projectName?: string; status?: JA.JAStatus }) => {
+    const { JA_SEARCH } = JA_PROTOCOL
+    const param: JA_PROTOCOL_SCHEMA.JA_SEARCH.REQUEST = { projectName: projectName || '' }
+    if (status) param.status = status
+    const res = await axios.get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, { params: param }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
+    if (res && res.code === 200) {
+      this.setState({ tableData: res.data.list })
+    }
   }
   /** 项目分发权限 提交 */
   distributeFinish = (values: any) => {
@@ -236,8 +249,9 @@ class AllApplication extends Component<any, State> {
     this.setState({ modalBuildShow: false })
   }
   /** 搜索 提交 */
-  searchFinish = (values: any) => {
+  searchFinish = (values: { projectName?: string, status?: JA.JAStatus }) => {
     console.log('val', values)
+    this.getDataList(values)
   }
   render() {
     const { columns, modalDetailData } = this.state
@@ -281,7 +295,7 @@ class AllApplication extends Component<any, State> {
                 </Form>
               </div>
               <Divider />
-              <Table rowKey="projectName" columns={columns} dataSource={this.state.tableData} />
+              <Table rowKey="_id" columns={columns} dataSource={this.state.tableData} />
             </div>
           </Col>
         </Row>
