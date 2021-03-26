@@ -107,7 +107,7 @@ class MineApplication extends Component<any, State> {
                 console.log('构建')
                 this.setState({ modalBuildShow: true })
                 setTimeout(() => {
-                  this.buildFormRef.current?.resetFields()
+                  this.buildFormRef.current?.setFieldsValue({ projectName: item.projectName, branch: '' })
                 })
               }}
             >构建</Button>
@@ -128,7 +128,7 @@ class MineApplication extends Component<any, State> {
               type="primary"
               size="small"
               onClick={() => {
-                window.open('http://121.37.158.0:8080/')
+                common.viewBuild(item.projectName)
               }}
             >查看构建</Button>
 
@@ -170,7 +170,7 @@ class MineApplication extends Component<any, State> {
   /** 各个表单 */
   editAddFormRef = React.createRef<FormInstance<JA.JenkinsApplication>>()
   searchFormRef = React.createRef<FormInstance>()
-  buildFormRef = React.createRef<FormInstance<{ branch: string }>>()
+  buildFormRef = React.createRef<FormInstance<{ projectName: string; branch: string; }>>()
   distributeFormRef = React.createRef<FormInstance<{ userName: string }>>()
 
   componentDidMount () {
@@ -221,6 +221,8 @@ class MineApplication extends Component<any, State> {
   /** 项目构建 提交 */
   buildFinish = (values: any) => {
     console.log('val', values)
+    const filedData = this.buildFormRef.current?.getFieldsValue()
+    common.build(filedData?.projectName, filedData?.branch)
     this.buildFormRef.current?.resetFields()
     this.setState({ modalBuildShow: false })
   }
@@ -292,7 +294,8 @@ class MineApplication extends Component<any, State> {
           title="项目创建"
           centered
           visible={this.state.modalAddEditShow}
-          onOk={() => { this.setState({ modalAddEditShow: false }) }}
+          onOk={() => {
+            this.setState({ modalAddEditShow: false }) }}
           onCancel={() => { this.setState({ modalAddEditShow: false }) }}
           width={900}
         >
@@ -388,12 +391,18 @@ class MineApplication extends Component<any, State> {
           title="构建"
           centered
           visible={this.state.modalBuildShow}
-          onOk={() => { this.setState({ modalBuildShow: false }) }}
+          onOk={() => {
+            this.setState({ modalBuildShow: false })
+          }}
           onCancel={() => { this.setState({ modalBuildShow: false }) }}
           width={600}
         >
           <Form {...addEditFormItemLayout} ref={this.buildFormRef} onFinish={this.buildFinish}>
-            <Form.Item name="branch" label="选择环境">
+            {/* hidden */}
+            <Form.Item name="projectName" label="projectName" hidden >
+              <Input placeholder="projectName" />
+            </Form.Item>
+            <Form.Item name="branch" label="选择环境" rules={[{ required: true }]}>
               <Select placeholder="请选择环境">
                 {common.branchList.map((item, ii) => (
                   <Select.Option key={ii + ''} value={item.value}>{item.name}</Select.Option>

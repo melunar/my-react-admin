@@ -179,7 +179,7 @@ class AllApplication extends Component<any, State> {
               type="primary"
               size="small"
               onClick={() => {
-                window.open('http://121.37.158.0:8080/')
+                common.viewBuild(item.projectName)
               }}
             >查看构建</Button>
 
