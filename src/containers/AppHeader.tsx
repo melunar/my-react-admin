@@ -1,28 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Dropdown, Icon, Layout, Avatar, Badge } from 'antd'
+import { Menu, Dropdown, Layout, Avatar, Badge } from 'antd'
+import { BellOutlined, EditOutlined, GithubOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined } from '@ant-design/icons'
+
 
 const { Header } = Layout
 
-const AppHeader = props => {
+const AppHeader = (props: { menuClick: any; avatar: any; menuToggle: any; loginOut: any }) => {
   let { menuClick, avatar, menuToggle, loginOut } = props
   const menu = (
     <Menu>
       <Menu.ItemGroup title='用户设置'>
         <Menu.Divider />
         <Menu.Item>
-          <Icon type='edit' />
+          {/* <Icon type='edit' /> */}
+          <EditOutlined />
           个人设置
         </Menu.Item>
         <Menu.Item>
-          <Icon type='setting' theme='filled' />
+          <SettingOutlined />
+          {/* <Icon type='setting' theme='filled' /> */}
           系统设置
         </Menu.Item>
       </Menu.ItemGroup>
       <Menu.Divider />
       <Menu.Item>
         <span onClick={loginOut}>
-          <Icon type='logout' /> 退出登录
+          {/* <Icon type='logout' /> 退出登录 */}
+          <LogoutOutlined />退出登录
         </span>
       </Menu.Item>
     </Menu>
@@ -30,18 +35,25 @@ const AppHeader = props => {
   return (
     <Header className='header'>
       <div className='left'>
-        <Icon style={{ fontSize: '2rem' }} onClick={menuClick} type={menuToggle ? 'menu-unfold' : 'menu-fold'} />
+        {menuToggle ? (
+          <MenuUnfoldOutlined style={{ fontSize: '2rem' }} onClick={menuClick} />
+        ) : (
+          <MenuFoldOutlined style={{ fontSize: '2rem' }} onClick={menuClick} />
+        )}
+        {/* <Icon  type={menuToggle ? 'menu-unfold' : 'menu-fold'} /> */}
       </div>
       <div className='right'>
         <div className='mr15'>
-          <a rel='noopener noreferrer' href='https://github.com/ltadpoles/react-admin' target='_blank'>
-            <Icon type='github' style={{ color: '#000' }} />
+          <a rel='noopener noreferrer' href='https://github.com/melunar/my-react-admin.git' target='_blank'>
+            {/* <Icon type='github' style={{ color: '#000' }} /> */}
+            <GithubOutlined style={{ color: '#000' }} />
           </a>
         </div>
         <div className='mr15'>
           <Badge dot={true} offset={[-2, 0]}>
-            <a href='https://github.com/ltadpoles/react-admin' style={{ color: '#000' }}>
-              <Icon type='bell' />
+            <a href='https://github.com/melunar/my-react-admin.git' style={{ color: '#000' }}>
+              {/* <Icon type='bell' /> */}
+              <BellOutlined />
             </a>
           </Badge>
         </div>

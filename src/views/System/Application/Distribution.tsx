@@ -50,7 +50,7 @@ const columns = [
 ]
 
 
-class UserPage extends Component<any, any> {
+class ApplicationDistribution extends Component<any, any> {
   constructor(props: any) {
     super(props)
     this.state = {
@@ -76,7 +76,7 @@ class UserPage extends Component<any, any> {
         <Row>
           <Col>
             <div className="base-style">
-              <h3 id="basic">用户管理</h3>
+              <h3 id="basic">应用分配记录</h3>
               <Divider />
               <Table rowKey="id" columns={columns} dataSource={this.state.tableData} />
             </div>
@@ -87,4 +87,4 @@ class UserPage extends Component<any, any> {
   }
 }
 
-export default UserPage
+export default ApplicationDistribution

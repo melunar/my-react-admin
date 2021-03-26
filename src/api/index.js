@@ -1,10 +1,11 @@
 import axios from 'axios'
+import { message } from 'antd'
 
 // 这里取决于登录的时候将 token 存储在哪里
 const token = localStorage.getItem('token')
 
 const instance = axios.create({
-  timeout: 5000
+  timeout: 10000
 })
 
 // 设置post请求头
@@ -26,6 +27,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => {
     if (response.status === 200) {
+      console.log('====> ', response.data)
       return Promise.resolve(response.data)
     } else {
       return Promise.reject(response)
@@ -46,6 +48,7 @@ instance.interceptors.response.use(
     //   default:
     //     console.log('其他错误信息')
     // }
+    message.error('[网络异常，请稍后再试]')
     return Promise.reject(error)
   }
 )

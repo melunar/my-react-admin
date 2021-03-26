@@ -321,7 +321,7 @@ class FromView extends Component {
                                         valuePropName: 'checked'
                                     })(
                                         <Checkbox>
-                                            阅读并理解 <a href='https://github.com/ltadpoles'>此协议</a>
+                                            阅读并理解 <a href='https://github.com/melunar/my-react-admin.git'>此协议</a>
                                         </Checkbox>
                                     )}
                                 </Form.Item>
@@ -342,6 +342,6 @@ class FromView extends Component {
     }
 }
 
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(FromView)
+const WrappedNormalLoginForm = Form.create({ name: ['normal_login'] })(FromView)
 
 export default WrappedNormalLoginForm

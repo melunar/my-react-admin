@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import { Menu } from 'antd'
+import { BarsOutlined } from '@ant-design/icons'
 import { Link, withRouter } from 'react-router-dom'
 
-class CustomMenu extends Component {
+class CustomMenu extends Component<any, any> {
   state = {
     openKeys: [],
     selectedKeys: []
   }
 
   // 处理 pathname
-  getOpenKeys = string => {
+  getOpenKeys = (string: string) => {
     let newStr = '',
       newArr = [],
       arr = string.split('/').map(i => '/' + i)
@@ -20,6 +21,7 @@ class CustomMenu extends Component {
     }
     return newArr
   }
+  static propTypes: { menu: PropTypes.Validator<any[]> }
 
   // 页面刷新的时候可以定位到 menu 显示
   componentDidMount() {
@@ -31,7 +33,7 @@ class CustomMenu extends Component {
   }
 
   // 点击面包屑导航时 侧边栏同步响应
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: any, prevState: any) {
     let { pathname } = this.props.location
     if (prevProps.location.pathname !== pathname) {
       this.setState({
@@ -42,7 +44,7 @@ class CustomMenu extends Component {
   }
 
   // 只展开一个 SubMenu
-  onOpenChange = openKeys => {
+  onOpenChange = (openKeys: string | any[]) => {
     if (openKeys.length === 0 || openKeys.length === 1) {
       // 全部关闭或者只打开一个 SubMenu
       this.setState({
@@ -66,23 +68,25 @@ class CustomMenu extends Component {
     }
   }
 
-  renderMenuItem = ({ key, icon, title }) => (
+  renderMenuItem = ({ key, icon, title }: MenuItem) => (
     <Menu.Item key={key}>
       <Link to={key}>
-        {icon && <Icon type={icon} />}
+        {/* {icon && <Icon type={icon} />} */}
+        {icon && <BarsOutlined />}
         <span>{title}</span>
       </Link>
     </Menu.Item>
   )
 
   // 循环遍历数组中的子项 subs ，生成子级 menu
-  renderSubMenu = ({ key, icon, title, subs }) => {
+  renderSubMenu = ({ key, icon, title, subs }: MenuItem) => {
     return (
       <Menu.SubMenu
         key={key}
         title={
           <span>
-            {icon && <Icon type={icon} />}
+            {/* {icon && <Icon type={icon} />} */}
+            {icon && <BarsOutlined />}
             <span>{title}</span>
           </span>
         }>
@@ -106,7 +110,7 @@ class CustomMenu extends Component {
         onOpenChange={this.onOpenChange} // SubMenu 展开/关闭的回调 function(openKeys: string[]) 【openKeys 是当前要展开的路径数组】
       >
         {this.props.menu &&
-          this.props.menu.map(item => {
+          this.props.menu.map((item: MenuItem) => {
             return item.subs && item.subs.length > 0 ? this.renderSubMenu(item) : this.renderMenuItem(item)
           })}
       </Menu>

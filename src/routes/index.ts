@@ -14,8 +14,8 @@ const MenuView = loadable(() => import(/* webpackChunkName: 'menu' */ '@/views/N
 const StepView = loadable(() => import(/* webpackChunkName: 'step' */ '@/views/NavView/Step'))
 
 // 表单
-const FormBaseView = loadable(() => import(/* webpackChunkName: 'formBase' */ '@/views/FormView/FormBaseView'))
-const FormStepView = loadable(() => import(/* webpackChunkName: 'formStep' */ '@/views/FormView/FormStepView'))
+// const FormBaseView = loadable(() => import(/* webpackChunkName: 'formBase' */ '@/views/FormView/FormBaseView'))
+// const FormStepView = loadable(() => import(/* webpackChunkName: 'formStep' */ '@/views/FormView/FormStepView'))
 
 // 展示
 const TableView = loadable(() => import(/* webpackChunkName: 'table' */ '@/views/ShowView/Table'))
@@ -34,8 +34,12 @@ const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Abo
 
 // 用户管理
 const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/System/User/index'))
+// 应用管理
+const MineApplication = loadable(() => import(/* webpackChunkName: 'mineApplication' */ '@/views/System/Application/Mine'))
+const AllApplication = loadable(() => import(/* webpackChunkName: 'allApplication' */ '@/views/System/Application/All'))
+const ApplicationDistribution = loadable(() => import(/* webpackChunkName: 'applicationDistribution' */ '@/views/System/Application/Distribution'))
 
-const routes = [
+const routes: RouteSchema[] = [
   { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
   { path: '/cms', exact: true, name: 'cms', component: Cms, auth: [1] },
   // { path: '/cms/page-config', exact: true, name: 'cms-detail', component: CmsPageConfig, auth: [1] },
@@ -44,8 +48,8 @@ const routes = [
   { path: '/nav/dropdown', exact: false, name: '下拉菜单', component: DropdownView },
   { path: '/nav/menu', exact: false, name: '下拉菜单', component: MenuView },
   { path: '/nav/steps', exact: false, name: '步骤条', component: StepView },
-  { path: '/form/base-form', exact: false, name: '表单', component: FormBaseView },
-  { path: '/form/step-form', exact: false, name: '表单', component: FormStepView },
+  // { path: '/form/base-form', exact: false, name: '表单', component: FormBaseView },
+  // { path: '/form/step-form', exact: false, name: '表单', component: FormStepView },
   { path: '/show/table', exact: false, name: '表格', component: TableView },
   { path: '/show/collapse', exact: false, name: '折叠面板', component: CollapseView },
   { path: '/show/tree', exact: false, name: '树形控件', component: TreeView },
@@ -57,6 +61,9 @@ const routes = [
   { path: '/one/two/three', exact: false, name: '三级', component: Three },
   { path: '/about', exact: false, name: '关于', component: About, auth: [1] },
   { path: '/system/user', exact: false, name: '用户管理', component: User, auth: [1] },
+  { path: '/system/application/mine', exact: false, name: '我的应用', component: MineApplication, auth: [1] },
+  { path: '/system/application/all', exact: false, name: '应用管理', component: AllApplication },
+  { path: '/system/application/distribution', exact: false, name: '应用下发记录', component: ApplicationDistribution },
 ]
 
 export default routes

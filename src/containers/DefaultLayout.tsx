@@ -3,19 +3,24 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Layout, BackTop, message } from 'antd'
 import routes from '@/routes'
+// import axios from '@/api'
+// import { AdminUrl } from '@/api/config'
+// import { USER_PROTOCOL, USER_PROTOCOL_SCHEMA } from '@/admin-types/modules/User.proto'
 import { menuToggleAction } from '@/store/actionCreators'
 import echarts from 'echarts/lib/echarts'
 import avatar from '@/assets/images/user.jpg'
 import menu from './menu'
 import '@/style/layout.scss'
 
-import AppHeader from './AppHeader.jsx'
-import AppAside from './AppAside.jsx'
-import AppFooter from './AppFooter.jsx'
+import AppHeader from './AppHeader'
+import AppAside from './AppAside'
+import AppFooter from './AppFooter'
 
 const { Content } = Layout
 
-class DefaultLayout extends Component {
+
+class DefaultLayout extends Component<any, any> {
+  timer: any
   state = {
     avatar,
     show: true,
@@ -37,13 +42,26 @@ class DefaultLayout extends Component {
     this.props.history.push('/login')
     message.success('登出成功!')
   }
-  getMenu = menu => {
-    let newMenu,
-      auth = JSON.parse(localStorage.getItem('user')).auth
+  getMenu = (menu: MenuItem[]) => {
+    let newMenu
+    const auth = JSON.parse(localStorage.getItem('user') as string).auth
     if (!auth) {
       return menu
     } else {
-      newMenu = menu.filter(res => res.auth && res.auth.indexOf(auth) !== -1)
+      // newMenu = menu.filter((res: any) => res.auth && res.auth.indexOf(auth) !== -1)
+      // newMenu 需要递归获取权限
+      const filterMenu = (menuList: MenuItem[], userType: number) => {
+        return menuList.filter(item => {
+          return item.auth?.includes(userType)
+        }).map(item => {
+            item = Object.assign({}, item)
+            if (item.subs) {
+              item.subs = filterMenu(item.subs, userType)
+            }
+            return item
+        })
+      }
+      newMenu = filterMenu(menu, auth)
       return newMenu
     }
   }
@@ -53,16 +71,16 @@ class DefaultLayout extends Component {
   }
 
   componentDidUpdate() {
-    let { pathname } = this.props.location
+    const { pathname } = this.props.location
 
     // 菜单收缩展开时 echarts 图表的自适应
     if (pathname === '/' || pathname === '/index') {
       this.timer = setTimeout(() => {
-        echarts.init(document.getElementById('bar')).resize()
-        echarts.init(document.getElementById('line')).resize()
-        echarts.init(document.getElementById('pie')).resize()
-        echarts.init(document.getElementById('pictorialBar')).resize()
-        echarts.init(document.getElementById('scatter')).resize()
+        echarts.init(document.getElementById('bar') as HTMLDivElement).resize()
+        echarts.init(document.getElementById('line') as HTMLDivElement).resize()
+        echarts.init(document.getElementById('pie') as HTMLDivElement).resize()
+        echarts.init(document.getElementById('pictorialBar') as HTMLDivElement).resize()
+        echarts.init(document.getElementById('scatter') as HTMLDivElement).resize()
       }, 500)
     } else {
       this.timer = null
@@ -74,10 +92,10 @@ class DefaultLayout extends Component {
   }
 
   render() {
-    let { menuClick, menuToggle } = this.props
-    let { auth } = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : ''
+    const { menuClick, menuToggle } = this.props
+    const { auth } = JSON.parse(localStorage.getItem('user') as string) ? JSON.parse(localStorage.getItem('user') as string) : ''
     return (
-      <Layout className='app'>
+      <Layout className="app">
         <BackTop />
         <AppAside menuToggle={menuToggle} menu={this.state.menu} />
         <Layout style={{ marginLeft: menuToggle ? '80px' : '200px', minHeight: '100vh' }}>
@@ -85,10 +103,10 @@ class DefaultLayout extends Component {
             menuToggle={menuToggle}
             menuClick={menuClick}
             avatar={this.state.avatar}
-            show={this.state.show}
+            // show={this.state.show}
             loginOut={this.loginOut}
           />
-          <Content className='content'>
+          <Content className="content">
             <Switch>
               {routes.map(item => {
                 return (
@@ -104,12 +122,12 @@ class DefaultLayout extends Component {
                         <item.component {...props} />
                       ) : (
                         // 这里也可以跳转到 403 页面
-                        <Redirect to='/404' {...props} />
+                        <Redirect to="/404" {...props} />
                       )
                     }></Route>
                 )
               })}
-              <Redirect to='/404' />
+              <Redirect to="/404" />
             </Switch>
           </Content>
           <AppFooter />
@@ -119,11 +137,11 @@ class DefaultLayout extends Component {
   }
 }
 
-const stateToProp = state => ({
+const stateToProp = (state: any) => ({
   menuToggle: state.menuToggle
 })
 
-const dispatchToProp = dispatch => ({
+const dispatchToProp = (dispatch: any) => ({
   menuClick() {
     dispatch(menuToggleAction())
   }
@@ -133,5 +151,5 @@ export default withRouter(
   connect(
     stateToProp,
     dispatchToProp
-  )(DefaultLayout)
+  )(DefaultLayout as any)
 )

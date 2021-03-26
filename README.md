@@ -1,8 +1,8 @@
 ## React 后台管理系统
 
-> [项目预览地址](???)
+> [项目预览地址](http://my-admin.lalapkp.cn/)
 
-> [fork](https://gitlab.com/melunar/react-admin.git)
+> [fork](https://github.com/melunar/my-react-admin.git)
 
 基于 `React` 生态系统搭建的后台管理系统模板
 
