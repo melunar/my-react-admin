@@ -1,5 +1,7 @@
 import { JA } from '@/admin-types/modules/JenkinsApplication'
-import axios from '@/api'
+import axios, { post } from '@/api'
+import { AdminJenkinsApplicationUrl } from '@/api/config'
+import { JA_PROTOCOL_SCHEMA, JA_PROTOCOL } from '@/admin-types/modules/JenkinsApplication.proto'
 
 const statusNameMapper: { [key: number]: string } = { [JA.JAStatus.APPLYING]: '申请中', [JA.JAStatus.REAPPLYING]: '再次申请中', [JA.JAStatus.RECEIVE]: '接受申请', [JA.JAStatus.RETURN]: '打回', [JA.JAStatus.SUCCESS]: '成功/可用'}
 const priorityNameMapper: { [key: number]: string } = { [JA.JAExigencyStatus.EXIGENCY]: '加急', [JA.JAExigencyStatus.SO_SO]: '普通', [JA.JAExigencyStatus.UNKNOW]: '未知', [JA.JAExigencyStatus.TEST]: '测试' }
@@ -26,18 +28,22 @@ const priorityList = [
 
 const branchList = [
   { value: 'origin/dev', name: 'DEV' },
-  { value: 'origin/master', name: 'IDC' },
+  { value: 'origin/master', name: 'MASTER' },
 ]
 
 /**
- * todo 后期把这里包一个接口调用
  * 触发Jenkins构建
- * @param projectName 项目名
- * @param branch 分支
  */
-const build = (projectName: string | undefined, branch: string | undefined) => {
+const build = async (projectId: string | undefined, projectName: string | undefined, branch: string | undefined) => {
   // todo 这里跨域了 移到后端去
-  axios.get(`http://121.37.158.0:8080/job/${projectName}/buildWithParameters?token=vue3-mall-structure-token&branch=${branch}&remark=暂无`)
+  // const _res = 
+  await post(`${AdminJenkinsApplicationUrl}${JA_PROTOCOL.JA_BUILD.url}`, {
+    projectName,
+    branch,
+    remark: 'DST平台构建',
+    projectId
+  } as JA_PROTOCOL_SCHEMA.JA_BUILD.REQUEST, { token: true, loading: true, errorBizAction: 'message' }).catch(() => { /* 异常捕获 */ }) as JA_PROTOCOL_SCHEMA.JA_BUILD.RESPONSE
+  // axios.get(`http://121.37.158.0:8080/job/${projectName}/buildWithParameters?token=vue3-mall-structure-token&branch=${branch}&remark=暂无`)
   // http://121.37.158.0:8080/job/vue3-mall/buildWithParameters?token=vue3-mall-structure-token&branch=origin/dev&remark=%E6%9A%82%E6%97%A0
   // http://121.37.158.0:8080/job/vue3_mall/buildWithParameters?token=vue3-mall-structure-token&branch=origin/dev&remark=api构建备注dev环境
 }
