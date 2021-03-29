@@ -3,7 +3,7 @@ import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import dayjs from 'dayjs'
 import { Modal, Layout, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance, AutoComplete, message } from 'antd'
 import { AdminJenkinsApplicationUrl } from '@/api/config'
-import axios from '@/api'
+import axios, { get, post } from '@/api'
 import { PlusOutlined } from '@ant-design/icons'
 import { JA_PROTOCOL_SCHEMA, JA_PROTOCOL } from '@/admin-types/modules/JenkinsApplication.proto'
 import { JA } from '@/admin-types/modules/JenkinsApplication'
@@ -134,16 +134,16 @@ class MineApplication extends Component<any, State> {
 
             // style={{ whiteSpace: 'nowrap' }}
             if (status === JA.JAStatus.APPLYING || status === JA.JAStatus.REAPPLYING) {
-              buttons = (<span>{detailBtn}<Divider type='vertical'/>{editBtn}</span>)
+              buttons = (<span>{detailBtn}<Divider type="vertical"/>{editBtn}</span>)
             }
             if (status === JA.JAStatus.RECEIVE) {
               buttons = (<span>{detailBtn}</span>)
             }
             if (status === JA.JAStatus.SUCCESS) {
-              buttons = (<span>{detailBtn}<Divider type='vertical'/>{distributeBtn}<br/><br style={{ lineHeight: '10px' }}/>{buildBtn}<Divider type='vertical'/>{viewBuildBtn}</span>)
+              buttons = (<span>{detailBtn}<Divider type="vertical"/>{distributeBtn}<br/><br style={{ lineHeight: '10px' }}/>{buildBtn}<Divider type="vertical"/>{viewBuildBtn}</span>)
             }
             if (status === JA.JAStatus.RETURN) {
-              buttons = (<span>{detailBtn}<Divider type='vertical'/>{editBtn}</span>)
+              buttons = (<span>{detailBtn}<Divider type="vertical"/>{editBtn}</span>)
             }
             return buttons
           }
@@ -180,7 +180,8 @@ class MineApplication extends Component<any, State> {
     const { JA_SEARCH } = JA_PROTOCOL
     const param: JA_PROTOCOL_SCHEMA.JA_SEARCH.REQUEST = { projectName: projectName || '' }
     if (status) param.status = status
-    const res = await axios.get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, { params: param }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
+    // const res = await axios.get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, { params: param }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
+    const res = await get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, param, { token: true, loading: true, errorBizAction: 'message' }).catch(() => { /* 异常捕获 */ }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
     if (res && res.code === 200) {
       this.setState({ tableData: res.data.list })
     }

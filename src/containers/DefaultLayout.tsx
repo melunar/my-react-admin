@@ -3,6 +3,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Layout, BackTop, message } from 'antd'
 import routes from '@/routes'
+import { clearUserLocalData } from '@/utils'
 // import axios from '@/api'
 // import { AdminUrl } from '@/api/config'
 // import { USER_PROTOCOL, USER_PROTOCOL_SCHEMA } from '@/admin-types/modules/User.proto'
@@ -38,7 +39,7 @@ class DefaultLayout extends Component<any, any> {
   }
 
   loginOut = () => {
-    localStorage.clear()
+    clearUserLocalData()
     this.props.history.push('/login')
     message.success('登出成功!')
   }

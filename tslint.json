@@ -61,7 +61,9 @@
     "no-internal-module": true,
     "no-trailing-whitespace": true,
     "no-null-keyword": false,
+    "no-console": false,
     "prefer-const": true,
+    "no-unused-vars": false,
     "jsdoc-format": true,
     "trailing-comma": [
       false,
