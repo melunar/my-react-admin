@@ -9,7 +9,7 @@ const defaultStore = {
   globalLoading: false,
 }
 
-export default (state = defaultStore, action) => {
+export default (state = defaultStore, action: { type: string }) => {
   switch (action.type) {
     case MENU_TOGGLE:
       return { ...state, menuToggle: !state.menuToggle }

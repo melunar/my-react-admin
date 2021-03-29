@@ -112,13 +112,13 @@ function request(url: string, params: object, config: CustomAxiosConfig, method:
         const { code, message } = (res as ResponseOptions<any>)
         if (code === ResponseCodeEnum.SUCCESS) {
           resolve(res)
-        } else if ([401].includes(code)) {
+        } else if ([ResponseCodeEnum.USER_UNAUTHORIZED].includes(code)) {
           showErrorAndLogin('用户未认证')
-        } else if ([402].includes(code)) {
+        } else if ([ResponseCodeEnum.USER_AUTHORIZED_INVALID].includes(code)) {
           showErrorAndLogin('无效用户认证')
-        } else if ([403].includes(code)) {
+        } else if ([ResponseCodeEnum.USER_AUTHORIZED_EXPIRED].includes(code)) {
           showErrorAndLogin('用户认证过期')
-        } else if ([405].includes(code)) {
+        } else if ([ResponseCodeEnum.USER_NOT_ALLOWED].includes(code)) {
           showErrorAndLogin('没有权限操作')
         } else {
           showErrorMessage(message, errorBizAction)
