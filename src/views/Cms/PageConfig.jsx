@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Layout, Row, Col, Icon, Divider } from 'antd'
-import screenfull from 'screenfull'
+// import screenfull from 'screenfull'
 import '@/style/view-style/index.scss'
 
 import LineEcharts from './line.jsx'
@@ -55,7 +55,6 @@ class PageConfig extends Component {
                 <Icon type='fullscreen' style={{ cursor: 'pointer' }} onClick={this.fullToggle} />
               </div>
               <Divider />
-              <BarEcharts />
             </div>
           </Col>
         </Row>
@@ -67,17 +66,14 @@ class PageConfig extends Component {
           </Col>
           <Col span={12}>
             <div className='base-style'>
-              <PieEcharts />
             </div>
           </Col>
           <Col span={12}>
             <div className='base-style'>
-              <ScatterEcharts />
             </div>
           </Col>
           <Col span={12}>
             <div className='base-style'>
-              <PictorialBarEcharts />
             </div>
           </Col>
         </Row>
