@@ -3,7 +3,7 @@ import Loadable, { LoadingComponentProps } from 'react-loadable'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-class loadingComponent extends Component {
+class LoadingComponent extends Component {
   constructor(props: any) {
     super(props)
     NProgress.start()
@@ -19,7 +19,7 @@ class loadingComponent extends Component {
   }
 }
 
-export default (loader: any, loading = loadingComponent as ComponentType<LoadingComponentProps>) => {
+export default (loader: any, loading = LoadingComponent as ComponentType<LoadingComponentProps>) => {
   return Loadable({
     loader,
     loading

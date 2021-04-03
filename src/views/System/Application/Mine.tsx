@@ -3,7 +3,7 @@ import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import dayjs from 'dayjs'
 import { Modal, Layout, Divider, Row, Col, Tag, Table, Button, Descriptions, Form, Input, Select, FormInstance, AutoComplete, message } from 'antd'
 import { AdminJenkinsApplicationUrl } from '@/api/config'
-import axios from '@/api'
+import axios, { get, post } from '@/api'
 import { PlusOutlined } from '@ant-design/icons'
 import { JA_PROTOCOL_SCHEMA, JA_PROTOCOL } from '@/admin-types/modules/JenkinsApplication.proto'
 import { JA } from '@/admin-types/modules/JenkinsApplication'
@@ -107,7 +107,7 @@ class MineApplication extends Component<any, State> {
                 console.log('构建')
                 this.setState({ modalBuildShow: true })
                 setTimeout(() => {
-                  this.buildFormRef.current?.setFieldsValue({ projectName: item.projectName, branch: '' })
+                  this.buildFormRef.current?.setFieldsValue({ projectId: item._id, projectName: item.projectName, branch: '' })
                 })
               }}
             >构建</Button>
@@ -134,16 +134,16 @@ class MineApplication extends Component<any, State> {
 
             // style={{ whiteSpace: 'nowrap' }}
             if (status === JA.JAStatus.APPLYING || status === JA.JAStatus.REAPPLYING) {
-              buttons = (<span>{detailBtn}<Divider type='vertical'/>{editBtn}</span>)
+              buttons = (<span>{detailBtn}<Divider type="vertical"/>{editBtn}</span>)
             }
             if (status === JA.JAStatus.RECEIVE) {
               buttons = (<span>{detailBtn}</span>)
             }
             if (status === JA.JAStatus.SUCCESS) {
-              buttons = (<span>{detailBtn}<Divider type='vertical'/>{distributeBtn}<br/><br style={{ lineHeight: '10px' }}/>{buildBtn}<Divider type='vertical'/>{viewBuildBtn}</span>)
+              buttons = (<span>{detailBtn}<Divider type="vertical"/>{distributeBtn}<br/><br style={{ lineHeight: '10px' }}/>{buildBtn}<Divider type="vertical"/>{viewBuildBtn}</span>)
             }
             if (status === JA.JAStatus.RETURN) {
-              buttons = (<span>{detailBtn}<Divider type='vertical'/>{editBtn}</span>)
+              buttons = (<span>{detailBtn}<Divider type="vertical"/>{editBtn}</span>)
             }
             return buttons
           }
@@ -170,7 +170,7 @@ class MineApplication extends Component<any, State> {
   /** 各个表单 */
   editAddFormRef = React.createRef<FormInstance<JA.JenkinsApplication>>()
   searchFormRef = React.createRef<FormInstance>()
-  buildFormRef = React.createRef<FormInstance<{ projectName: string; branch: string; }>>()
+  buildFormRef = React.createRef<FormInstance<{ projectId: string, projectName: string; branch: string; }>>()
   distributeFormRef = React.createRef<FormInstance<{ userName: string }>>()
 
   componentDidMount () {
@@ -180,7 +180,8 @@ class MineApplication extends Component<any, State> {
     const { JA_SEARCH } = JA_PROTOCOL
     const param: JA_PROTOCOL_SCHEMA.JA_SEARCH.REQUEST = { projectName: projectName || '' }
     if (status) param.status = status
-    const res = await axios.get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, { params: param }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
+    // const res = await axios.get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, { params: param }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
+    const res = await get(`${AdminJenkinsApplicationUrl}${JA_SEARCH.url}`, param, { token: true, loading: true, errorBizAction: 'message' }).catch(() => { /* 异常捕获 */ }) as JA_PROTOCOL_SCHEMA.JA_SEARCH.RESPONSE
     if (res && res.code === 200) {
       this.setState({ tableData: res.data.list })
     }
@@ -222,7 +223,7 @@ class MineApplication extends Component<any, State> {
   buildFinish = (values: any) => {
     console.log('val', values)
     const filedData = this.buildFormRef.current?.getFieldsValue()
-    common.build(filedData?.projectName, filedData?.branch)
+    common.build(filedData?.projectId, filedData?.projectName, filedData?.branch)
     this.buildFormRef.current?.resetFields()
     this.setState({ modalBuildShow: false })
   }
@@ -402,8 +403,11 @@ class MineApplication extends Component<any, State> {
             <Form.Item name="projectName" label="projectName" hidden >
               <Input placeholder="projectName" />
             </Form.Item>
-            <Form.Item name="branch" label="选择环境" rules={[{ required: true }]}>
-              <Select placeholder="请选择环境">
+            <Form.Item name="projectId" label="projectId" hidden >
+              <Input placeholder="projectId" />
+            </Form.Item>
+            <Form.Item name="branch" label="选择环境-分支" rules={[{ required: true }]}>
+              <Select placeholder="请选择部署环境" allowClear>
                 {common.branchList.map((item, ii) => (
                   <Select.Option key={ii + ''} value={item.value}>{item.name}</Select.Option>
                 ))}

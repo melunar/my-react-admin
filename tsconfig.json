@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.path.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -22,7 +22,6 @@
     "jsx": "react-jsx",
     "baseUrl": "./src"
   },
-  "extends": "./tsconfig.base.json",
   "awesomeTypescriptLoaderOptions": {
     "transpileOnly": true
   },
