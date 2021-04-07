@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Menu } from 'antd'
-import { BarsOutlined } from '@ant-design/icons'
+import * as iconList from '@ant-design/icons'
 import { Link, withRouter } from 'react-router-dom'
 
 class CustomMenu extends Component<any, any> {
@@ -11,10 +11,10 @@ class CustomMenu extends Component<any, any> {
   }
 
   // 处理 pathname
-  getOpenKeys = (string: string) => {
-    let newStr = '',
-      newArr = [],
-      arr = string.split('/').map(i => '/' + i)
+  getOpenKeys = (str: string) => {
+    let newStr = ''
+    const newArr = []
+    const arr = str.split('/').map(i => '/' + i)
     for (let i = 1; i < arr.length - 1; i++) {
       newStr += arr[i]
       newArr.push(newStr)
@@ -25,7 +25,7 @@ class CustomMenu extends Component<any, any> {
 
   // 页面刷新的时候可以定位到 menu 显示
   componentDidMount() {
-    let { pathname } = this.props.location
+    const { pathname } = this.props.location
     this.setState({
       selectedKeys: [pathname],
       openKeys: this.getOpenKeys(pathname)
@@ -34,7 +34,7 @@ class CustomMenu extends Component<any, any> {
 
   // 点击面包屑导航时 侧边栏同步响应
   componentDidUpdate(prevProps: any, prevState: any) {
-    let { pathname } = this.props.location
+    const { pathname } = this.props.location
     if (prevProps.location.pathname !== pathname) {
       this.setState({
         selectedKeys: [pathname],
@@ -68,25 +68,27 @@ class CustomMenu extends Component<any, any> {
     }
   }
 
-  renderMenuItem = ({ key, icon, title }: MenuItem) => (
-    <Menu.Item key={key}>
-      <Link to={key}>
-        {/* {icon && <Icon type={icon} />} */}
-        {icon && <BarsOutlined />}
-        <span>{title}</span>
-      </Link>
-    </Menu.Item>
-  )
+  renderMenuItem = ({ key, icon, title }: MenuItem) => {
+    const IconComp = (iconList as any)[icon as string]
+    return (
+      <Menu.Item key={key}>
+        <Link to={key}>
+          {icon && <IconComp />}
+          <span>{title}</span>
+        </Link>
+      </Menu.Item>
+    )
+  }
 
   // 循环遍历数组中的子项 subs ，生成子级 menu
   renderSubMenu = ({ key, icon, title, subs }: MenuItem) => {
+    const IconComp = (iconList as any)[icon as string]
     return (
       <Menu.SubMenu
         key={key}
         title={
           <span>
-            {/* {icon && <Icon type={icon} />} */}
-            {icon && <BarsOutlined />}
+            {icon && <IconComp />}
             <span>{title}</span>
           </span>
         }>
@@ -99,11 +101,11 @@ class CustomMenu extends Component<any, any> {
   }
 
   render() {
-    let { openKeys, selectedKeys } = this.state
+    const { openKeys, selectedKeys } = this.state
     return (
       <Menu
-        mode='inline' // vertical | horizontal | inline
-        theme='dark'
+        mode="inline" // vertical | horizontal | inline
+        theme="dark"
         openKeys={openKeys} // 当前展开的 SubMenu 菜单项 key 数组
         selectedKeys={selectedKeys}
         onClick={({ key }) => this.setState({ selectedKeys: [key] })} // 仅仅为点击 MenuItem 的回调

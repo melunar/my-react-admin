@@ -1,6 +1,6 @@
 import loadable from '@/utils/loadable'
 
-const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index'))
+const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index/Index'))
 const Cms = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Cms'))
 // const CmsPageConfig = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Cms/PageConfig'))
 

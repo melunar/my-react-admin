@@ -12,22 +12,22 @@ const menu: MenuItem[] = [
   {
     key: '/index',
     title: '首页',
-    icon: 'home',
+    icon: 'HomeOutlined',
     auth: [1]
   },
   {
     key: '/cms',
     title: 'CMS',
-    icon: 'home',
+    icon: 'BorderOuterOutlined',
     auth: [1]
   },
   {
     title: '系统',
     key: '/system',
-    icon: 'setting',
+    icon: 'SettingOutlined',
     auth: [1],
     subs: [
-      { title: '用户管理', key: '/system/user', icon: 'user' },
+      { title: '用户管理', key: '/system/user', icon: 'UserOutlined' },
       { title: 'Jenkins应用管理', key: '/system/application', icon: '', auth: [1], subs: [
         { title: '我的应用', key: '/system/application/mine', icon: '', auth: [1] },
         { title: '应用审核', key: '/system/application/all', icon: '', },
@@ -38,14 +38,14 @@ const menu: MenuItem[] = [
   {
     title: '通用',
     key: '/public',
-    icon: 'appstore',
+    icon: 'AppstoreOutlined',
     auth: [1],
     subs: [{ title: '按钮', key: '/public/button', icon: '' }, { title: '图标', key: '/public/icon', icon: '' }]
   },
   {
     title: '导航',
     key: '/nav',
-    icon: 'bulb',
+    icon: 'BulbOutlined',
     subs: [
       { title: '下拉菜单', key: '/nav/dropdown', icon: '' },
       { title: '导航菜单', key: '/nav/menu', icon: '' },
@@ -55,7 +55,7 @@ const menu: MenuItem[] = [
   {
     title: '表单',
     key: '/form',
-    icon: 'form',
+    icon: 'FormOutlined',
     subs: [
       { title: '基础表单', key: '/form/base-form', icon: '' },
       { title: '步骤表单', key: '/form/step-form', icon: '' }
@@ -64,7 +64,7 @@ const menu: MenuItem[] = [
   {
     title: '展示',
     key: '/show',
-    icon: 'pie-chart',
+    icon: 'PieChartOutlined',
     subs: [
       { title: '表格', key: '/show/table', icon: '' },
       { title: '折叠面板', key: '/show/collapse', icon: '' },
@@ -75,7 +75,7 @@ const menu: MenuItem[] = [
   {
     title: '其它',
     key: '/others',
-    icon: 'paper-clip',
+    icon: 'PaperClipOutlined',
     auth: [1],
     subs: [
       { title: '进度条', key: '/others/progress', icon: '' },
@@ -89,7 +89,7 @@ const menu: MenuItem[] = [
   {
     title: '多级导航',
     key: '/one',
-    icon: 'bars',
+    icon: 'BarsOutlined',
     subs: [
       {
         title: '二级',
@@ -102,7 +102,7 @@ const menu: MenuItem[] = [
   {
     title: '关于',
     key: '/about',
-    icon: 'user',
+    icon: 'UserOutlined',
     auth: [1]
   }
 ]
