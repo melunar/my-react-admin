@@ -3,6 +3,7 @@ import { Layout, Row, Col } from 'antd'
 import { DingdingOutlined, QqOutlined, WechatOutlined, WeiboCircleOutlined } from '@ant-design/icons'
 import screenfull from 'screenfull'
 import '@/style/view-style/index.scss'
+import styles from './index.module.scss'
 
 import PieEcharts from './pie.jsx'
 import LineEcharts from './line.jsx'
@@ -18,6 +19,7 @@ class Main extends Component {
   render() {
     return (
       <Layout className="index animated fadeIn">
+        <p className={styles.red}>css module style</p>
         <Row gutter={24} className="index-header">
           <Col span={6}>
             <div className="base-style wechat">
