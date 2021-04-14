@@ -491,6 +491,9 @@ module.exports = function(webpackEnv) {
                   importLoaders: 2,
                   sourceMap: isEnvProduction && shouldUseSourceMap,
                   modules: true,
+                  // 自定义css-module哈希类名
+                  localIdentName: '[path][name]---[local]---[hash:base64:5]',
+                  // style-loader!css-loader?modules&localIdentName=[path][name]---[local]---[hash:base64:5]
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
                 'sass-loader'
