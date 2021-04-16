@@ -41,6 +41,7 @@ const ApplicationDistribution = loadable(() => import(/* webpackChunkName: 'appl
 
 const routes: RouteSchema[] = [
   { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
+  { path: '/test/111', exact: true, name: 'cms', component: Cms, auth: [1] },
   { path: '/cms', exact: true, name: 'cms', component: Cms, auth: [1] },
   // { path: '/cms/page-config', exact: true, name: 'cms-detail', component: CmsPageConfig, auth: [1] },
   { path: '/public/button', exact: false, name: '按钮', component: ButtonView, auth: [1] },

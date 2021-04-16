@@ -7,10 +7,10 @@ import { BellOutlined, EditOutlined, GithubOutlined, LogoutOutlined, MenuFoldOut
 const { Header } = Layout
 
 const AppHeader = (props: { menuClick: any; avatar: any; menuToggle: any; loginOut: any }) => {
-  let { menuClick, avatar, menuToggle, loginOut } = props
+  const { menuClick, avatar, menuToggle, loginOut } = props
   const menu = (
     <Menu>
-      <Menu.ItemGroup title='用户设置'>
+      <Menu.ItemGroup title="用户设置">
         <Menu.Divider />
         <Menu.Item>
           {/* <Icon type='edit' /> */}
@@ -33,8 +33,8 @@ const AppHeader = (props: { menuClick: any; avatar: any; menuToggle: any; loginO
     </Menu>
   )
   return (
-    <Header className='header'>
-      <div className='left'>
+    <Header className="header">
+      <div className="left">
         {menuToggle ? (
           <MenuUnfoldOutlined style={{ fontSize: '2rem' }} onClick={menuClick} />
         ) : (
@@ -42,16 +42,16 @@ const AppHeader = (props: { menuClick: any; avatar: any; menuToggle: any; loginO
         )}
         {/* <Icon  type={menuToggle ? 'menu-unfold' : 'menu-fold'} /> */}
       </div>
-      <div className='right'>
-        <div className='mr15'>
-          <a rel='noopener noreferrer' href='https://github.com/melunar/my-react-admin.git' target='_blank'>
+      <div className="right">
+        <div className="mr15">
+          <a rel="noopener noreferrer" href="https://github.com/melunar/my-react-admin.git" target="_blank">
             {/* <Icon type='github' style={{ color: '#000' }} /> */}
             <GithubOutlined style={{ color: '#000' }} />
           </a>
         </div>
-        <div className='mr15'>
+        <div className="mr15">
           <Badge dot={true} offset={[-2, 0]}>
-            <a href='https://github.com/melunar/my-react-admin.git' style={{ color: '#000' }}>
+            <a href="https://github.com/melunar/my-react-admin.git" style={{ color: '#000' }}>
               {/* <Icon type='bell' /> */}
               <BellOutlined />
             </a>
@@ -59,8 +59,8 @@ const AppHeader = (props: { menuClick: any; avatar: any; menuToggle: any; loginO
         </div>
         <div>
           <Dropdown overlay={menu} overlayStyle={{ width: '20rem' }}>
-            <div className='ant-dropdown-link'>
-              <Avatar icon='user' src={avatar} alt='avatar' style={{ cursor: 'pointer' }} />
+            <div className="ant-dropdown-link">
+              <Avatar icon="user" src={avatar} alt="avatar" style={{ cursor: 'pointer' }} />
             </div>
           </Dropdown>
         </div>
